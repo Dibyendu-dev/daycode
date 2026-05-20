@@ -1,12 +1,14 @@
-import { createCliRenderer, TextAttributes } from "@opentui/core";
+import { createCliRenderer } from "@opentui/core";
 import { createRoot } from "@opentui/react";
+import { Header } from "./components/Header";
+import { InputBar } from "./components/input-bar";
 
 function App() {
   return (
-    <box alignItems="center" justifyContent="center" flexGrow={1}>
-      <box justifyContent="center" alignItems="flex-end">
-        <ascii-font font="tiny" text="deycode" />
-        <text attributes={TextAttributes.DIM}>What will you build?</text>
+    <box alignItems="center" justifyContent="center" backgroundColor="#0D0D12" width="100%" height="100%" gap={2}>
+      <Header />
+      <box width="100%" maxWidth={78} paddingX={2}>
+        <InputBar onSubmit={() => {}}  />
       </box>
     </box>
   );
