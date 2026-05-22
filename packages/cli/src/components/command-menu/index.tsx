@@ -28,8 +28,7 @@ export function CommandMenu({
   onExecute,
 }: CommandMenuProps) {
   const filteredCommands = getFilteredCommands(query);
-  const visibleHeight =
-    Math.min(filteredCommands.length, MAX_VISIBLE_COMMANDS) * 2 + 1;
+  const visibleHeight = Math.min(filteredCommands.length, MAX_VISIBLE_COMMANDS);
   if (filteredCommands.length === 0) {
     return (
       <box paddingX={1}>
