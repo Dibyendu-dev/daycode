@@ -1,4 +1,4 @@
-import { createContext, useRef, useContext, useState, useCallback, use } from "react";
+import { createContext, useRef, useContext, useState, useCallback } from "react";
 import type { ToastOptions, ToastVariant } from "./types";
 import { DEFAULT_DURATION } from "./types";
 import type { ReactNode } from "react";
