@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, type RefObject, use } from "react";
+import { useRef, useState, useMemo, type RefObject } from "react";
 import type { ScrollBoxRenderable } from "@opentui/core";
 import { useKeyboard } from "@opentui/react";
 import { getFilteredCommands } from "./filter-commands";

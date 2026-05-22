@@ -10,7 +10,7 @@ import { COMMANDS } from "./command";
 const MAX_VISIBLE_COMMANDS = 8;
 
 const COMMANDS_COL_WIDTH =
-  Math.max(...COMMANDS.map((cmd) => cmd.name.length)) + 4;
+  Math.max(0, ...COMMANDS.map((cmd) => cmd.name.length)) + 4;
 
 type CommandMenuProps = {
   query: string;
@@ -39,16 +39,13 @@ export function CommandMenu({
   }
 
   return (
-    <scrollbox
-      ref={scrollRef}
-      height={visibleHeight}
-     
-    >
+    <scrollbox ref={scrollRef} height={visibleHeight} width="100%">
       {filteredCommands.map((cmd, index) => {
         const isSelected = index === selectedIndex;
         return (
           <box
             key={cmd.value}
+            width="100%"
             flexDirection="row"
             paddingX={1}
             overflow="hidden"
