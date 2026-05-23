@@ -13,16 +13,22 @@ export const COMMANDS: Command[] = [
         name: "agents",
         description: "List available agents",
         value: "/agents",
-        action: async (ctx) => {
-            ctx.toast.show({message: "Listing available agents...",variant: "info"});
+        action: (ctx) => {
+            ctx.dialog.openDialog({
+                title: "select an agent",
+                children: <text> Agent selection coming soon...</text>
+            });
         }
     },
     {
         name: "models",
         description: "List available models",
         value: "/models",
-        action: async (ctx) => {
-            ctx.toast.show({message: "Listing available models...",variant: "info"});
+        action: (ctx) => {
+            ctx.dialog.openDialog({
+                title: "select a model",
+                children: <text> Model selection coming soon...</text>
+            });
         }
     },
     {

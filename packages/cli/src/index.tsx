@@ -4,10 +4,12 @@ import { Header } from "./components/Header";
 import { InputBar } from "./components/input-bar";
 import { ToastProvider } from "./components/providers/toast";
 import { KeyboardLayerProvider } from "./components/providers/keyboard-layer";
+import { DialogProvider } from "./components/providers/dialog";
 
 function App() {
   return (
     <KeyboardLayerProvider>
+      <DialogProvider>
     <ToastProvider>
       <box
         alignItems="center"
@@ -23,6 +25,7 @@ function App() {
       </box>
     </box>
     </ToastProvider>
+    </DialogProvider>
     </KeyboardLayerProvider>
   );
 }
