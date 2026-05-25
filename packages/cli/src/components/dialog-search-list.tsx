@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  ScrollBox,
   TextAttributes,
   type InputRenderable,
   type ScrollBoxRenderable,
@@ -110,7 +111,7 @@ export function DialogSearchList<T>({
       {filteredItems.length === 0 ? (
         <text attributes={TextAttributes.DIM}>{emptyText}</text>
       ) : (
-        <scrollBox ref={scrollRef} height={visibleHeight}>
+        <scrollbox ref={scrollRef} height={visibleHeight}>
           {filteredItems.map((item, i) => {
             const isSelected = i === selectedIndex;
             return (
@@ -130,7 +131,7 @@ export function DialogSearchList<T>({
               </box>
             );
           })}
-        </scrollBox>
+        </scrollbox>
       )}
     </box>
   );
