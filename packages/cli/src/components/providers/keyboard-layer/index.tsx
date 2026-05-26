@@ -35,12 +35,16 @@ export function KeyboardLayerProvider({ children }: { children: React.ReactNode 
    
 
     const pop = useCallback((id: string) => {
+        if (id === "base") return;
         responders.current.delete(id);
-        setStack((prev) => prev.filter((layerId) => layerId !== id));
+        setStack((prev) => {
+       const next = prev.filter((layerId) => layerId !== id);
+       return next.length === 0 ? ["base"] : next;
+   });
     }, []);
 
     const isTopLayer = useCallback((id: string) => {
-        return stackRef.current.length ===0 || stackRef.current[stackRef.current.length - 1] === id;
+        return stackRef.current[stackRef.current.length - 1] === id;
     }, []);
 
     const setResponder = useCallback((id: string, responder: Responder | null) => {

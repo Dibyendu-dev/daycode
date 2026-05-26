@@ -46,13 +46,15 @@ export function useCommandMenu(): UseCommandMenuReturns {
     const hasCommandPrefix = text.startsWith("/");
     const commandText = hasCommandPrefix ? text.slice(1) : "";
     if (hasCommandPrefix && !commandText.includes(" ")) {
-      setShowCommandMenu(true);
-      push("command", () => {
-        close();
-        return true;
-      });
+      if (!showCommandMenu) {
+       setShowCommandMenu(true);
+        push("command", () => {
+          close();
+          return true;
+       });
+      }
     } else {
-      close();
+     if (showCommandMenu) close();
     }
   };
 
