@@ -6,6 +6,7 @@ import {
 } from "@opentui/core";
 import { getFilteredCommands } from "./filter-commands";
 import { COMMANDS } from "./command";
+import { useTheme } from "../providers/theme";
 
 const MAX_VISIBLE_COMMANDS = 8;
 
@@ -27,9 +28,9 @@ export function CommandMenu({
   onSelect,
   onExecute,
 }: CommandMenuProps) {
+  const {colors} = useTheme()
   const filteredCommands = getFilteredCommands(query);
-  const visibleHeight =
-    Math.min(filteredCommands.length, MAX_VISIBLE_COMMANDS) * 2 + 1;
+  const visibleHeight = Math.min(filteredCommands.length, MAX_VISIBLE_COMMANDS);
   if (filteredCommands.length === 0) {
     return (
       <box paddingX={1}>
@@ -49,7 +50,7 @@ export function CommandMenu({
             flexDirection="row"
             paddingX={1}
             overflow="hidden"
-            backgroundColor={isSelected ? "blue" : undefined}
+            backgroundColor={isSelected ? colors.selection : undefined}
             onMouseMove={() => onSelect(index)}
             onMouseDown={() => onExecute(index)}
           >
