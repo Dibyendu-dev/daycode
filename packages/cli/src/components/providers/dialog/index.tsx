@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { TextAttributes, RGBA } from "@opentui/core";
 import type { DialogConfig } from "./types";
 import { useKeyboardLayer } from "../keyboard-layer";
+import { useTheme } from "../theme";
 
 
 export type DialogContextValue = {
@@ -29,6 +30,7 @@ type DialogProviderProps = {
 export function DialogProvider({ children }: DialogProviderProps) {
     const [currentDialog, setCurrentDialog] = useState<DialogConfig | null>(null);
     const { push, pop } = useKeyboardLayer();
+
     const close = useCallback(() => {
         setCurrentDialog(null);
         pop("dialog");
@@ -62,6 +64,7 @@ type DialogProps = {
 function Dialog({ currentDialog, close }: DialogProps) {
     const { isTopLayer } = useKeyboardLayer();
     const dimensions = useTerminalDimensions();
+    const {colors} =useTheme();
     useKeyboard((key) => {
         if (!currentDialog || !isTopLayer("dialog")) return;
         if (key.name === "escape") {
@@ -87,7 +90,7 @@ function Dialog({ currentDialog, close }: DialogProps) {
             <box
             width={Math.min(60,dimensions.width -4)}
             height="auto"
-            backgroundColor="#1A1A20"
+            backgroundColor={colors.dialogSurface}
             paddingX={4}
             paddingY={1}
             flexDirection="column"

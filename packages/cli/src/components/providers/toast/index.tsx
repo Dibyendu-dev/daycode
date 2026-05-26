@@ -3,6 +3,7 @@ import type { ToastOptions, ToastVariant } from "./types";
 import { DEFAULT_DURATION } from "./types";
 import type { ReactNode } from "react";
 import { useTerminalDimensions } from "@opentui/react";
+import { useTheme } from "../theme";
 
 export type ToastContextValue = {
     show: (options: ToastOptions) => void;
@@ -69,6 +70,7 @@ type ToastProps = {
 
 function Toast({ currentToast }: ToastProps) {
     const { width } = useTerminalDimensions();
+    const {colors} =useTheme();
     if (!currentToast) {
         return null;
     }
@@ -76,9 +78,9 @@ function Toast({ currentToast }: ToastProps) {
     const { message, variant } = currentToast;
 
     const variantStyles: Record<ToastVariant, string> = {
-        info: "#56D6C2",
-        success: "#4CAF50",
-        error: "#F44336",
+        info: colors.info,
+        success: colors.success,
+        error: colors.error,
     };
 
     const borderColor = currentToast.variant 
@@ -97,7 +99,7 @@ function Toast({ currentToast }: ToastProps) {
         paddingRight={2}
         paddingTop={1}
         paddingBottom={1}
-        backgroundColor={"#333"}
+        backgroundColor={colors.surface}
         border = {["left", "right"]}
         borderColor={borderColor}
         >
