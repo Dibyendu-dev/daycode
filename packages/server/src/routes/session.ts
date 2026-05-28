@@ -33,7 +33,7 @@ let nextId = 1;
 const createSessionSchema = z.object({
     title: z.string(),
     cwd: z.string().optional(),
-    intialMessage: z.object({
+    initialMessage: z.object({
         role: z.string(),
         content: z.string(),
         mode: z.string(),
@@ -55,6 +55,7 @@ const app = new Hono()
     .get("/",(c)=> {
     const result = sessions.map(({id,title,createdAt}) => ({id,title,createdAt}))
     return c.json(result)
+    })
     .get("/:id",async(c)=> {
         // await new Promise((r)=> setTimeout(r, 5000));
         // throw new HTTPException(500,{message: "mock error: session loading failed"})
@@ -98,6 +99,6 @@ const app = new Hono()
         sessions.push(session)
         return c.json(session,201);
     })
-})
+
 
 export default app;

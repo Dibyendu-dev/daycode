@@ -4,13 +4,13 @@ import { InputBar } from "./input-bar";
 import  { Spinner } from "./spinner";
 
 type Props = { 
-    childern?: ReactNode;
+    children?: ReactNode;
     onSubmit: (text: string) => void;
     inputDisabled?: boolean;
     loading?: boolean;
 }
 
-export function SessionShell({childern,onSubmit,inputDisabled=false,loading=false}:Props){
+export function SessionShell({children,onSubmit,inputDisabled=false,loading=false}:Props){
     return(
         <box
         flexDirection="column"
@@ -24,7 +24,7 @@ export function SessionShell({childern,onSubmit,inputDisabled=false,loading=fals
             <scrollbox
             flexGrow={1} width="100%" height="100%" stickyScroll stickyStart="bottom"
             >
-                <box gap={1}>{childern}</box>
+                <box gap={1}>{children}</box>
             </scrollbox>
             <box flexShrink={0}>
                 <InputBar onSubmit={onSubmit} disabled={inputDisabled} />
