@@ -1,0 +1,17 @@
+{
+    "name": "@daycode/server",
+    "type": "module",
+    "private": true,
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "dev": "bun run --hot src/index.ts"
+    },
+    "dependencies": {
+        "@daycode/shared": "workspace:*",
+        "@hono/zod-validator": "^0.8.0",
+        "hono": "^4.12.23",
+        "zod": "^4.4.3"
+    }
+}

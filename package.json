@@ -11,6 +11,8 @@
   "main": "index.js",
   "scripts": {
     "dev:cli": "bun run --cwd packages/cli dev",
+    "dev:server": "bun run --cwd packages/server dev",
+
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
