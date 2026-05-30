@@ -34,7 +34,7 @@ model Session {
   title     String
   cwd       String?
   createdAt DateTime  @default(now())
-  updatedat DateTime  @updatedAt
+  updatedAt DateTime  @updatedAt
   messages  Message[]
   @@index([userId])
 }
