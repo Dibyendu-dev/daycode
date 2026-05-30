@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams,useLocation, useNavigate } from "react-router";
 import { z} from "zod";
-import type { InferResponseType } from "hono";
+import type { InferResponseType } from "hono/client";
 import { SessionShell } from "../components/session-shell";
 import { UserMessage, BotMessage, ErrorMessage } from "../components/messages";
 import { useToast } from "../components/providers/toast";
