@@ -3,8 +3,9 @@ import { HTTPException} from "hono/http-exception"
 import { zValidator} from "@hono/zod-validator"
 import { z } from 'zod';
 import { findSupportedChatModel} from "@daycode/shared"
-import { db} from "@daycode/database";
+import { db} from "@daycode/database/client";
 import { Role, Mode,  MessageStatus } from '@daycode/database/enums';
+import * as Sentry from "@sentry/hono/bun";
 
 const createSessionSchema = z.object({
     title: z.string(),
@@ -21,6 +22,10 @@ const createSessionSchema = z.object({
 
 const createSessionValidator = zValidator("json", createSessionSchema, (result,c) => {
     if(!result.success){
+        Sentry.logger.warn("Session creation validation failed", {
+            path: c.req.path,
+            issues: result.error.issues.length,
+        })
         return c.json({
             error: "Invalid request body"
         },400)
@@ -37,6 +42,10 @@ const app = new Hono()
             createdAt: true,
         }
     })
+
+        Sentry.logger.info("Listed Session", {
+            count: session.length,
+        })
         return c.json(session);
     })
     .get("/:id",async(c)=> {
@@ -73,6 +82,10 @@ const app = new Hono()
                 })
             },
             include: {messages: true}
+        })
+         Sentry.logger.info("Created Session", {
+           sessionId: session.id,
+           title: session.title
         })
         return c.json(session,201);
     })
