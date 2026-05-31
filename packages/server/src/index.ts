@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { sentry} from "@sentry/hono/bun"
 import { HTTPException} from "hono/http-exception"
 import sessions from "./routes/session";
-import * as Sentry from "@sentry/hono/bun";
+import chat from "./routes/chat"
 
 const app = new Hono();
 
@@ -43,6 +43,8 @@ app.onError((error,c)=> {
 })
 
 const routes = app.route("/sessions", sessions)
+                  .route("/chat", chat)
+                  
 export type AppType = typeof routes;
 
 export default {port: 3000, fetch: app.fetch, idleTimeout: 255};
