@@ -125,7 +125,7 @@ async function streamAIResponse(
 }
 
 const app = new Hono()
-  .post("/sessionId/resume", async (c) => {
+  .post("/:sessionId/resume", async (c) => {
     const sessionId = c.req.param("sessionId");
     if (!sessionId) {
       return c.json({ error: "session id missing" }, 400);
@@ -178,7 +178,7 @@ const app = new Hono()
       },
     );
   })
-  .post("/sessionId", submitValidator, async (c) => {
+  .post("/:sessionId", submitValidator, async (c) => {
     const sessionId = c.req.param("sessionId");
     if (!sessionId) {
       return c.json({ error: "session id missing" }, 400);
