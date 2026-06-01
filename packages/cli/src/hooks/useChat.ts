@@ -6,7 +6,8 @@ import { apiClient } from "../lib/api-client";
 import { getErrorMessage } from "../lib/http-errors";
 import type { Mode } from "@daycode/database/enums";
 import { chatStreamEventSchema, type SupportedChatModelId } from "@daycode/shared";
-import { sign } from "node:crypto";
+import type { id } from "zod/v4/locales";
+
 
 export type ClientMessagePart = { type: "text"; text: string }
 
@@ -110,10 +111,18 @@ export const useChat = (
             return;
         }
 
-        const parts: ClientMessagePart[] = []
+        const parts: ClientMessagePart[] = [];
 
+        if (!response.body) {
+            updateMessages(prev => [...prev, {
+                id: crypto.randomUUID(),
+                role: "error",
+                content: "Streaming response body was empty"
+            }]);
+            return;
+        }
         const stream = response
-            .body!.pipeThrough(new TextDecoderStream())
+            .body.pipeThrough(new TextDecoderStream())
             .pipeThrough(new EventSourceParserStream());
 
         for await (const { data } of stream) {
@@ -173,6 +182,7 @@ export const useChat = (
     }, [updateMessages, emitParts, isActiveRequest]);
 
     const runStream = useCallback(async ({ mode, model, request }: RunStreamParams) => {
+        activeStreamRef.current?.controller.abort();
         const controller = new AbortController();
         const activeStream: ActiveStream = {
             requestId: crypto.randomUUID(),
@@ -229,6 +239,7 @@ export const useChat = (
     const hasAutoResumeRef = useRef(false);
     useEffect(() => {
         if (hasAutoResumeRef.current) return;
+        if (!sessionId) return;
         const last = initialMessages[initialMessages.length - 1];
         if (!last || last.role !== "user") return;
 
@@ -238,6 +249,9 @@ export const useChat = (
 
 
     const submit = useCallback(async ({ userText, mode, model }: SubmitParams) => {
+        if (!sessionId) {
+            throw new Error("Missing sessionId");
+        }
         const userMessage: Message = {
             id: crypto.randomUUID(),
             role: "user",
@@ -246,9 +260,7 @@ export const useChat = (
             model
         };
         updateMessages(prev => [...prev, userMessage]);
-        if (!sessionId) {
-            throw new Error("Missing sessionId");
-        }
+       
         await runStream({
             mode,
             model,
