@@ -1,3 +1,10 @@
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(import.meta.dirname, "../../.env"),
+});
+
 import { Hono } from 'hono';
 import { sentry} from "@sentry/hono/bun"
 import { HTTPException} from "hono/http-exception"
