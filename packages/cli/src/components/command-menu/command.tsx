@@ -1,25 +1,29 @@
+import { SUPPORTED_CHAT_MODELS } from "@daycode/shared";
+import { ModelDialogContent } from "../dialogs";
+import { AgentDialogContent } from "../dialogs/agent.dialog";
 import { SessionDialogContent } from "../dialogs/session.dialog";
 import { ThemeDialogContent } from "../dialogs/theme.dialog";
 import type { Command } from "./types";
+import { ModelName } from "../../../../database/generated/prisma/internal/prismaNamespace";
 
 export const COMMANDS: Command[] = [
     {
         name: "new",
         description: "Create a new project",
         value : "/new",
-        action: async (ctx) => {
-            ctx.toast.show({message: "Creating a new project...",variant: "info"});
+        action:  (ctx) => {
+            ctx.navigate("/");
         }
     },
     {
         name: "agents",
         description: "List available agents",
         value: "/agents",
-        action: (ctx) => {
+       action: (ctx) => {
             ctx.dialog.openDialog({
-                title: "select an agent",
-                children: <text> Agent selection coming soon...</text>
-            });
+                title: "select agent",
+                children: <AgentDialogContent currentMode={ctx.mode} onSelectMode={ctx.setMode} />
+            })
         }
     },
     {
@@ -28,9 +32,10 @@ export const COMMANDS: Command[] = [
         value: "/models",
         action: (ctx) => {
             ctx.dialog.openDialog({
-                title: "select a model",
-                children: <text> Model selection coming soon...</text>
-            });
+                title: "select model",
+                children: <ModelDialogContent models={SUPPORTED_CHAT_MODELS.map((model) => model.id)}
+                 onSelectModel={ctx.setModel} />
+            })
         }
     },
     {
