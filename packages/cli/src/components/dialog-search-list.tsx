@@ -36,7 +36,7 @@ export function DialogSearchList<T>({
   const inputRef = useRef<InputRenderable>(null);
   const scrollRef = useRef<ScrollBoxRenderable>(null);
   const { isTopLayer } = useKeyboardLayer();
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   const filteredItems = useMemo(() => {
     return searchValue
@@ -103,38 +103,42 @@ export function DialogSearchList<T>({
 
   return (
     <box flexDirection="column" gap={1}>
-      <input
-        ref={inputRef}
-        placeholder={placeholder}
-        onChange={handleContentChange}
-        focused
-      />
+      <box>
+        <input
+          ref={inputRef}
+          placeholder={placeholder}
+          onChange={handleContentChange}
+          focused
+        />
+      </box>
 
-      {filteredItems.length === 0 ? (
-        <text attributes={TextAttributes.DIM}>{emptyText}</text>
-      ) : (
-        <scrollbox ref={scrollRef} height={visibleHeight}>
-          {filteredItems.map((item, i) => {
-            const isSelected = i === selectedIndex;
-            return (
-              <box
-                key={getKey ? getKey(item) : String(i)}
-                flexDirection="row"
-                height={1}
-                overflow="hidden"
-                backgroundColor={isSelected ? colors.selection : undefined}
-                onMouseMove={() => {
-                  setSelectedIndex(i);
-                  if (onHighlight) onHighlight(item);
-                }}
-                onMouseDown={() => onSelect(item)}
-              >
-                {renderItem(item, isSelected)}
-              </box>
-            );
-          })}
-        </scrollbox>
-      )}
+      <box flexGrow={1}>
+        {filteredItems.length === 0 ? (
+          <text attributes={TextAttributes.DIM}>{emptyText}</text>
+        ) : (
+          <scrollbox ref={scrollRef} height={visibleHeight}>
+            {filteredItems.map((item, i) => {
+              const isSelected = i === selectedIndex;
+              return (
+                <box
+                  key={getKey ? getKey(item) : String(i)}
+                  flexDirection="row"
+                  height={1}
+                  overflow="hidden"
+                  backgroundColor={isSelected ? colors.selection : undefined}
+                  onMouseMove={() => {
+                    setSelectedIndex(i);
+                    if (onHighlight) onHighlight(item);
+                  }}
+                  onMouseDown={() => onSelect(item)}
+                >
+                  {renderItem(item, isSelected)}
+                </box>
+              );
+            })}
+          </scrollbox>
+        )}
+      </box>
     </box>
   );
 }

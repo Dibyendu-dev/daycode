@@ -20,6 +20,8 @@ const submitValidator = zValidator("json", submitSchema, (result, c) => {
   }
 });
 
+const activeSeesionResumeIds = new Set<string>();
+
 // strip error message and empty assistant messages from the conversarion
 function buildConversationHistory(
   messages: {
@@ -40,6 +42,20 @@ function buildConversationHistory(
   });
 }
 
+function getResumableUserMessage(
+  messages:{
+    role: "USER" | "ASSISTANT" | "ERROR";
+    model: string;
+    mode: Mode;
+  }[],
+) {
+   const lastMessage = messages[messages.length - 1];
+   if (!lastMessage || lastMessage.role !== "USER") return null;
+   if (!isSupportedChatModel(lastMessage.model)) return null;
+   return lastMessage;
+}
+
+
 type StreamParams = {
   sessionId: string;
   model: string;
@@ -56,6 +72,24 @@ async function streamAIResponse(
   const startTime = Date.now();
   const resolvedModel = resolveChatModel(model);
   let fullText = "";
+
+  const persistInterruptedMessage = async() => {
+    if (fullText.length === 0) return;
+
+    const elapsedMs = Date.now() - startTime;
+
+    await db.message.create({
+      data: {
+        sessionId,
+        role: "ASSISTANT",
+        status: MessageStatus.INTERRUPTED,
+        model,
+        content: fullText,
+        mode,
+        duration: Math.round(elapsedMs / 1000),
+      },
+    });
+  };
 
   try {
     const result = aiStreamText({
@@ -81,7 +115,10 @@ async function streamAIResponse(
       }
     }
 
-    if (stream.aborted || abortController.signal.aborted) return;
+    if (stream.aborted || abortController.signal.aborted) {
+      await persistInterruptedMessage();
+      return;
+    }
 
     const elapsedMs = Date.now() - startTime;
 
@@ -105,7 +142,10 @@ async function streamAIResponse(
 
     await stream.writeSSE({ event: "done", data: JSON.stringify(doneEvent) });
   } catch (error) {
-    if (abortController.signal.aborted) return;
+    if (abortController.signal.aborted) {
+      await persistInterruptedMessage();
+      return;
+    }
 
     const message = error instanceof Error ? error.message : String(error);
 
@@ -138,35 +178,45 @@ const app = new Hono()
       return c.json({ error: "session is missing" }, 400);
     }
 
-    const lastMessage = session.messages[session.messages.length - 1];
-    if (!lastMessage || lastMessage.role !== "USER") {
+    const resumableMessage = getResumableUserMessage(session.messages);
+    if (!resumableMessage) {
       return c.json(
         { error: "session is no pending user message to resume" },
         409,
       );
     }
 
-    if (!isSupportedChatModel(lastMessage.model)) {
-      return c.json({ error: "session uses unsupported model" }, 409);
+    if (!isSupportedChatModel(resumableMessage.model)) {
+      return c.json({ error: `session uses unsupported model ${resumableMessage.model}` }, 409);
     }
+
+    if (activeSeesionResumeIds.has(sessionId)) {
+      return c.json({ error: "session is already being resumed" }, 409);
+    }
+    activeSeesionResumeIds.add(sessionId);
 
     const history = buildConversationHistory(session.messages);
     const abortController = new AbortController();
 
-    return streamSSE(
+    try {
+      return streamSSE(
       c,
       async (stream) => {
         stream.onAbort(() => {
           abortController.abort();
         });
 
-        await streamAIResponse(stream, {
-          sessionId,
-          model: lastMessage.model,
-          history,
-          mode: lastMessage.mode,
-          abortController,
-        });
+        try {
+          await streamAIResponse(stream, {
+            sessionId,
+            model: resumableMessage.model,
+            history,
+            mode: resumableMessage.mode,
+            abortController,
+          });
+        } finally {
+          activeSeesionResumeIds.delete(sessionId);
+        }
       },
       async (err, stream) => {
         const message = err instanceof Error ? err.message : String(err);
@@ -177,6 +227,10 @@ const app = new Hono()
         });
       },
     );
+    } catch (error) {
+         activeSeesionResumeIds.delete(sessionId);
+          const message = error instanceof Error ? error.message : String(error);
+    }
   })
   .post("/:sessionId", submitValidator, async (c) => {
     const sessionId = c.req.param("sessionId");

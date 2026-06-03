@@ -1,3 +1,4 @@
+import { SessionDialogContent } from "../dialogs/session.dialog";
 import { ThemeDialogContent } from "../dialogs/theme.dialog";
 import type { Command } from "./types";
 
@@ -36,8 +37,11 @@ export const COMMANDS: Command[] = [
         name: "session",
         description: "Restore previous session",
         value: "/session",
-        action: async (ctx) => {
-            ctx.toast.show({message: "Restoring previous session...",variant: "info"});
+         action: (ctx) => {
+            ctx.dialog.openDialog({
+                title: "Sessions",
+                children: <SessionDialogContent />
+            })
         }
     },
     {

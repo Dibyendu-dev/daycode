@@ -6,11 +6,14 @@
         ".": "./src/index.ts"
     },
     "scripts": {
-        "dev": "bun run --watch --env-file=../../.env src/index.ts"
+        "dev": "bun run --watch --env-file=../../.env src/index.ts",
+        "build": "bun build src/index.ts  --outdir dist --target bun",
+        "postinstall": "bun run --cwd ../database db:generate"
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^3.0.81",
         "@ai-sdk/openai": "^3.0.67",
+        "@ai-sdk/google": "^3.0.70",
         "@daycode/database": "workspace:*",
         "@daycode/shared": "workspace:*",
         "@hono/zod-validator": "^0.8.0",
