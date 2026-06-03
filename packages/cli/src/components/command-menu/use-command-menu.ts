@@ -10,7 +10,7 @@ type UseCommandMenuReturns = {
   showCommandMenu: boolean;
   commandQuery: string;
   selectedIndex: number;
-  scrollRef: RefObject<ScrollBoxRenderable>;
+  scrollRef: RefObject<ScrollBoxRenderable | null>;
   handleContentChange: (text: string) => void;
   resolveCommand: (index: number) => Command | undefined;
   setSelectedIndex: (index: number) => void;

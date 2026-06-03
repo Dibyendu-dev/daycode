@@ -69,6 +69,7 @@ function ChatMessage({msg}: {msg: Message}) {
 function SessionChat({session}: {session: SessionData}){
     const [initialMessages] = useState(()=> mapDBMessages(session.messages));
     const {messages, streamingState, submit, abort, interrupt } = useChat( session.id, initialMessages);
+    const { isTopLayer } = useKeyboardLayer();
 
     useEffect(()=>{
         return()=> abort();
