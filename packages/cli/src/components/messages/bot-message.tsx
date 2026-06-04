@@ -27,7 +27,7 @@ type PartGroup = {
   key: string;
 }
 
-function groupConsecutiveParts(parts: ClientMessagePart[]):PartGroup{
+function groupConsecutiveParts(parts: ClientMessagePart[]):PartGroup[]{
   const groups:PartGroup[] = [];
 
   for(let i=0; i< parts.length; i++){
@@ -71,7 +71,7 @@ export function BotMessage({
                 paddingY={2}
                 >
                   <text attributes={TextAttributes.DIM}>
-                    <em fg={colors.thinking}>Thinking:</em>
+                    <em fg={colors.thinking}>Thinking: </em>
                     {part.text}
                   </text>
                 </box>

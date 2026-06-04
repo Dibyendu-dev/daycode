@@ -15,7 +15,7 @@ export type ClientToolCallPart = {
     name: string;
     args: Record<string, unknown>;
     result?: string;
-    status: "calling" | "done";
+    status?: "calling" | "done";
 }
 
 export type ClientMessagePart =
