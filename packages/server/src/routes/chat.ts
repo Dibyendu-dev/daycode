@@ -174,7 +174,7 @@ async function streamAIResponse(
         const resultStr =
           typeof part.output === "string"
             ? part.output
-            : JSON.stringify(part.output);
+            : (JSON.stringify(part.output) ?? "null");
 
           const tcPart = parts.find(
             (p):p is Extract<MessagePart, {type: "tool-call"}>=>
@@ -191,7 +191,7 @@ async function streamAIResponse(
         };
 
          await stream.writeSSE({
-          event: "text-result",
+          event: "tool-result",
           data: JSON.stringify(event),
         });
       }
@@ -330,6 +330,7 @@ const app = new Hono()
     } catch (error) {
       activeSeesionResumeIds.delete(sessionId);
       const message = error instanceof Error ? error.message : String(error);
+      return c.json({ error: message }, 500);
     }
   })
   .post("/:sessionId", submitValidator, async (c) => {
