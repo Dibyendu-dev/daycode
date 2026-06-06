@@ -4,13 +4,14 @@ import { z} from "zod";
 import prettyMs from "pretty-ms";
 import { useKeyboard } from "@opentui/react";
 import type { InferResponseType } from "hono/client";
-import { DEFAULT_CHAT_MODEL_ID, type SupportedChatModelId } from "@daycode/shared";
+import {  messagePartsSchema,type SupportedChatModelId,DEFAULT_CHAT_MODEL_ID } from "@daycode/shared";
 import { SessionShell } from "../components/session-shell";
 import { UserMessage, BotMessage, ErrorMessage } from "../components/messages";
 import { useToast } from "../components/providers/toast";
 import { apiClient } from "../lib/api-client";
 import { getErrorMessage } from "../lib/http-errors";
 import { useChat } from "../hooks/useChat";
+import { usePromptConfig } from "../components/providers/prompt-config";
 import type { Message, ClientMessagePart } from "../hooks/useChat";
 import type { TypeOf } from "zod/v3";
 import { MessageStatus } from "@daycode/database/enums";
@@ -27,7 +28,8 @@ const sessionLocationSchema = z.object({
 function mapDBMessages(dbmessages: SessionData["messages"]):Message[] {
     return dbmessages.map((msg):Message => {
         if (msg.role === "USER") {
-            return {id: msg.id, role: "user", 
+            return {id: msg.id,
+                 role: "user", 
                 content: msg.content, 
                 model: msg.model as SupportedChatModelId || DEFAULT_CHAT_MODEL_ID,
                  mode:msg.mode 
@@ -36,12 +38,22 @@ function mapDBMessages(dbmessages: SessionData["messages"]):Message[] {
         if (msg.role === "ERROR") {
             return {id: msg.id, role: "error", content: msg.content} ;
         }
+
+       const parsedParts =  msg.parts == null ? null : messagePartsSchema.safeParse(msg.parts);
+       const parts: ClientMessagePart[] = parsedParts?.success
+         ? parsedParts.data.map((p) =>
+             p.type === "tool-call" ? { ...p, status: "done" as const } : p,
+           )
+         : msg.content
+           ? [{ type: "text", text: msg.content }]
+           : []
+
         return {id: msg.id, 
             role: "assistant",
              content: msg.content,
              mode: msg.mode,
              model: msg.model as SupportedChatModelId || DEFAULT_CHAT_MODEL_ID,
-            parts: [{ type: "text", text: msg.content }],
+            parts,
             ...(msg.duration != null ? {duration: prettyMs(msg.duration * 1000 )} : {}),
             interrupted: msg.status === MessageStatus.INTERRUPTED,
             };
@@ -50,7 +62,7 @@ function mapDBMessages(dbmessages: SessionData["messages"]):Message[] {
 
 function ChatMessage({msg}: {msg: Message}) {
     if (msg.role === "user") {
-        return <UserMessage message={msg.content} />
+        return <UserMessage message={msg.content} mode={msg.mode}/>
     }
      if (msg.role === "error") {
         return <ErrorMessage message={msg.content} />
@@ -68,6 +80,7 @@ function ChatMessage({msg}: {msg: Message}) {
 
 function SessionChat({session}: {session: SessionData}){
     const [initialMessages] = useState(()=> mapDBMessages(session.messages));
+    const { mode, model} = usePromptConfig();
     const {messages, streamingState, submit, abort, interrupt } = useChat( session.id, initialMessages);
     const { isTopLayer } = useKeyboardLayer();
 
@@ -84,7 +97,7 @@ function SessionChat({session}: {session: SessionData}){
 
     return(
         <SessionShell
-        onSubmit={(text)=> submit({userText: text, mode: "BUILD", model: DEFAULT_CHAT_MODEL_ID})}
+        onSubmit={(text)=> submit({userText:text, mode, model})}
         loading={streamingState.status === "streaming"}
         interuptible={streamingState.status === "streaming"}
         >
