@@ -60,7 +60,7 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         ## Tool Usage
         You have these tools available:
         -**readFile**- Read a file's contents
-        -**WriteFile**- Create or overwrite a file
+        -**writeFile**- Create or overwrite a file
         -**editFile**- Make a targeted string replacement in a file (oldstring must be unique)
         -**listDirectory**- List entries in a directory
         -**glob**- Find files matching a pattern (e.g. "**/*.ts")

@@ -24,7 +24,9 @@ export function createBashTool(cwd: string) {
           env: { ...process.env, TERM: "dumb" },
         });
 
+        let timedOut = false;
         const timer = setTimeout(() => {
+          timedOut = true;
           proc.kill();
         }, timeout);
 
@@ -45,6 +47,7 @@ export function createBashTool(cwd: string) {
           stdout: truncate(stdout),
           stderr: truncate(stderr),
           exitCode,
+          ...(timedOut ? { timedOut: true } : {}),
         };
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);

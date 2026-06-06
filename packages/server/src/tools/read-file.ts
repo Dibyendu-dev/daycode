@@ -2,10 +2,13 @@ import { resolve, relative} from "path";
 import { readFile} from "fs/promises";
 import { tool} from "ai";
 import  { z} from "zod";
+import { sep } from "path";
 
 const MAX_FILE_SIZE= 10_000;
 
+
 export function createReadFileTool(cwd: string) {
+  const normalizedCwd = cwd.endsWith(sep) ? cwd : cwd + sep;
   return tool({
     description: ` Read the contents of a file in the project. Returns the file text,
      truncated if very large.`,
@@ -21,7 +24,7 @@ export function createReadFileTool(cwd: string) {
       }
 
       // ensure resolved path is still within cwd
-      if(!resolved.startsWith(cwd)) {
+       if (rel.startsWith("..") || !resolved.startsWith(normalizedCwd)) {
         return { error: "Path is outside the project directory"}
       }
       try {
@@ -36,7 +39,7 @@ export function createReadFileTool(cwd: string) {
         return { content};
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        return { error: `Failed to write file: ${message}` };
+        return { error: `Failed to read file: ${message}` };
       }
     },
   });

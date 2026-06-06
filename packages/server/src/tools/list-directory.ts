@@ -9,7 +9,6 @@ export function createListDirectoryTool(cwd: string) {
     description: `List files and directories in a project directory. Returns name with type
     indicators.`,
     inputSchema: z.object({
-      pattern: z.string().describe("Glob pattern to match (e.g. '**/*.ts', 'arc/**/*.ts') " ),
       path: z
         .string()
         .describe("Relative path to directory to list (defaults to project root)")

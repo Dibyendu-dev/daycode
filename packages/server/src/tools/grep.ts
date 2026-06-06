@@ -71,7 +71,7 @@ export function createGrepTool(cwd: string) {
                 break;
             }
             // grep output format: /absolute/path:linenum:content
-            const match = line.match(/^(.+?):(\d):(.*)$/);
+          const match = line.match(/^(.+?):(\d+):(.*)$/);
             if(match) {
                 matches.push({
                     file: relative(cwd,match[1]!),

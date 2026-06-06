@@ -4,7 +4,7 @@ import { z} from "zod";
 import prettyMs from "pretty-ms";
 import { useKeyboard } from "@opentui/react";
 import type { InferResponseType } from "hono/client";
-import {  messagePartsSchema,type SupportedChatModelId } from "@daycode/shared";
+import {  messagePartsSchema,type SupportedChatModelId,DEFAULT_CHAT_MODEL_ID } from "@daycode/shared";
 import { SessionShell } from "../components/session-shell";
 import { UserMessage, BotMessage, ErrorMessage } from "../components/messages";
 import { useToast } from "../components/providers/toast";
@@ -41,8 +41,12 @@ function mapDBMessages(dbmessages: SessionData["messages"]):Message[] {
 
        const parsedParts =  msg.parts == null ? null : messagePartsSchema.safeParse(msg.parts);
        const parts: ClientMessagePart[] = parsedParts?.success
-                    ? parsedParts.data.map((p)=>
-                    p.type === "tool-call" ? { ...p, status: "done" as const} : p,) : []
+         ? parsedParts.data.map((p) =>
+             p.type === "tool-call" ? { ...p, status: "done" as const } : p,
+           )
+         : msg.content
+           ? [{ type: "text", text: msg.content }]
+           : []
 
         return {id: msg.id, 
             role: "assistant",

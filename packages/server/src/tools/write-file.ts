@@ -22,7 +22,7 @@ export function createWriteFileTool(cwd: string) {
         await writeFile(resolved,content,"utf-8");
 
         return {
-            sucess: true as const,
+            success: true as const,
             path: relative(cwd,resolved),
             bytesWritten: Buffer.byteLength(content,"utf-8")
         }
