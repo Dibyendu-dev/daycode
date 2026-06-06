@@ -1,17 +1,18 @@
 import { useTheme } from "../providers/theme";
-
+import { Mode } from "@daycode/database/enums";
 type props = {
     message: string;
+    mode: Mode;
 }
 
-export function UserMessage({message}:props) {
+export function UserMessage({message,mode}:props) {
     const {colors} = useTheme();
 
     return(
         <box width="100%" alignItems="center">
             <box
             border={["left"]}
-            backgroundColor={colors.primary}
+            backgroundColor={mode === Mode.PLAN ? colors.planMode : colors.primary}
             width="100%"
             >
                 <box

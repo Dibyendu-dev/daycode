@@ -1,6 +1,6 @@
 import { useEffect,useMemo, useRef } from "react";
 import {z} from "zod";
-import {DEFAULT_CHAT_MODEL_ID} from "@daycode/shared"
+import { Mode } from "@daycode/database/enums";
 import { replace, useLocation, useNavigate } from "react-router";
 import { SessionShell } from "../components/session-shell";
 import {  UserMessage } from "../components/messages";
@@ -13,6 +13,8 @@ import { error } from "node:console";
 
 const newSessionStateSchema = z.object({
   message: z.string(),
+  mode: z.enum(Mode),
+  model: z.string(),
 })
 
 export function NewSession(){
@@ -46,8 +48,8 @@ export function NewSession(){
               initialMessage: {
                 role: "USER",
                 content: state.message,
-                mode: "BUILD",
-                model: DEFAULT_CHAT_MODEL_ID,
+                mode: state.mode,
+                model: state.model,
               }
             }
           })
@@ -80,7 +82,7 @@ export function NewSession(){
          inputDisabled
          loading
          >
-          <UserMessage message={state.message}/>
+          <UserMessage message={state.message} mode={state.mode}/>
          </SessionShell>
         
     )
