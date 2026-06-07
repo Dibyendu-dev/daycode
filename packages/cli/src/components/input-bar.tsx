@@ -26,36 +26,36 @@ import { isAbsolute, relative, resolve } from "path";
 
 const MAX_VISIBLE_MENTIONS = 8;
 
-function findWorkspaceRoot(startDirectory: string) {
-  let currentDirectory = resolve(startDirectory);
+// function findWorkspaceRoot(startDirectory: string) {
+//   let currentDirectory = resolve(startDirectory);
 
-  while (true) {
-    try {
-      const packageJson = JSON.parse(
-        readFileSync(resolve(currentDirectory, "package.json"), "utf8"),
-      ) as { workspaces?: string[] | { packages?: string[] } };
+//   while (true) {
+//     try {
+//       const packageJson = JSON.parse(
+//         readFileSync(resolve(currentDirectory, "package.json"), "utf8"),
+//       ) as { workspaces?: string[] | { packages?: string[] } };
 
-      if (packageJson.workspaces) {
-        return currentDirectory;
-      }
-    } catch {
-      // Ignore missing package.json and continue walking upward.
-    }
+//       if (packageJson.workspaces) {
+//         return currentDirectory;
+//       }
+//     } catch {
+//       // Ignore missing package.json and continue walking upward.
+//     }
 
-    const parentDirectory = resolve(currentDirectory, "..");
-    if (parentDirectory === currentDirectory) {
-      break;
-    }
+//     const parentDirectory = resolve(currentDirectory, "..");
+//     if (parentDirectory === currentDirectory) {
+//       break;
+//     }
 
-    currentDirectory = parentDirectory;
-  }
+//     currentDirectory = parentDirectory;
+//   }
 
-  return startDirectory;
-}
+//   return startDirectory;
+// }
 
-const CURRENT_DIRECTORY = findWorkspaceRoot(process.cwd());
+const CURRENT_DIRECTORY = resolve(import.meta.dir, "..", "..", "..", "..");
 const MAX_FALLBACK_MENTION_CANDIDATES = 32;
-const MENTION_QUERY_CHARACTER = /[A_Za-z0-9._/-]/;
+const MENTION_QUERY_CHARACTER = /[A-Za-z0-9._/-]/;
 const RECURSIVE_MENTION_IGNORED_DIRECTORIES = new Set(["node_modules"]);
 
 type MentionMatch = {
@@ -120,7 +120,7 @@ function findActiveMention(
 
   return {
     start: start + mentionStart,
-    end: end + mentionEnd,
+    end: start + mentionEnd,
     query: token.slice(mentionStart + 1, mentionEnd),
   };
 }
@@ -443,8 +443,9 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
       const insertion =
         candidate.kind === "directory" ? candidate.path : `${candidate.path}`;
 
-      const nextText = `${textarea.plainText.slice(0, mention.start)}@${insertion}
-      ${textarea.plainText.slice(mention.end)}`;
+      const nextText =
+        `${textarea.plainText.slice(0, mention.start)}@${insertion}` +
+        textarea.plainText.slice(mention.end);
 
       textarea.replaceText(nextText);
       textarea.cursorOffset = mention.start + insertion.length + 1;
