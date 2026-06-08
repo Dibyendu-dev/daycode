@@ -21,7 +21,7 @@ export async function authenticateOAuthRequest(request: Request) {
     if(!requestState.isAuthenticated) return null;
 
     const auth = requestState.toAuth();
-    if(auth.tokenType === "oauth_token" || !auth.userId) return null;
+    if (auth.tokenType !== "oauth_token" || !auth.userId) return null;
 
-    return { userId: auth.userId}
+    return { userId: auth.userId };
 }

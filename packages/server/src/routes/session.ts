@@ -6,6 +6,7 @@ import { findSupportedChatModel} from "@daycode/shared"
 import { db} from "@daycode/database/client";
 import { Role, Mode,  MessageStatus } from '@daycode/database/enums';
 import * as Sentry from "@sentry/hono/bun";
+import type { AuthenticatedEnv } from '../middleware/require-auth';
 
 const createSessionSchema = z.object({
     title: z.string(),
@@ -32,9 +33,11 @@ const createSessionValidator = zValidator("json", createSessionSchema, (result,c
     }
 })
 
-const app = new Hono()
+const app = new Hono<AuthenticatedEnv>()
     .get("/", async(c)=> {
-    const session = await db.session.findMany({
+        const userId =c.get("userId");
+        const session = await db.session.findMany({
+        where: {userId},
         orderBy: { createdAt: "desc"},
         select: {
             id: true,
@@ -52,9 +55,10 @@ const app = new Hono()
         // await new Promise((r)=> setTimeout(r, 5000));
         // throw new HTTPException(500,{message: "mock error: session loading failed"})
         const id = c.req.param("id")
+        const userId =c.get("userId");
 
         const session = await db.session.findUnique({
-            where: {id},
+            where: {id, userId},
             include: {
                 messages: { orderBy: { createdAt: "asc"}}
             }
@@ -66,12 +70,14 @@ const app = new Hono()
          return c.json(session)
     })
     .post("/", createSessionValidator,async(c)=> {
+
+        const userId =c.get("userId");
         const {initialMessage, ...data} = c.req.valid("json");
        
         const session = await db.session.create({
             data: {
                 ...data,
-                userId: "mock-user",
+                userId: userId,
                 ...(initialMessage && {
                     messages : {
                         create: {

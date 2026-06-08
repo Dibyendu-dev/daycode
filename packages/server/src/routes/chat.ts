@@ -15,6 +15,7 @@ import {
 import { isSupportedChatModel, resolveChatModel } from "../lib/model";
 import { createTools } from "../tools";
 import { buildSystemPrompts } from "../system-prompt";
+import type { AuthenticatedEnv } from "../middleware/require-auth";
 
 
 const submitSchema = z.object({
@@ -260,7 +261,7 @@ async function streamAIResponse(
         role: "ERROR",
         status: MessageStatus.COMPLETE,
         model,
-        content: fullText,
+        content: message,
         mode,
       },
     });
@@ -269,14 +270,15 @@ async function streamAIResponse(
   }
 }
 
-const app = new Hono()
+const app = new Hono<AuthenticatedEnv>()
   .post("/:sessionId/resume", async (c) => {
     const sessionId = c.req.param("sessionId");
+    const userId = c.get("userId");
     if (!sessionId) {
       return c.json({ error: "session id missing" }, 400);
     }
     const session = await db.session.findUnique({
-      where: { id: sessionId },
+      where: { id: sessionId, userId },
       include: { messages: { orderBy: { createdAt: "asc" } } },
     });
     if (!session) {
@@ -344,12 +346,14 @@ const app = new Hono()
   })
   .post("/:sessionId", submitValidator, async (c) => {
     const sessionId = c.req.param("sessionId");
+    const userId = c.get("userId");
+
     if (!sessionId) {
       return c.json({ error: "session id missing" }, 400);
     }
 
     const session = await db.session.findUnique({
-      where: { id: sessionId },
+      where: { id: sessionId, userId },
       include: { messages: { orderBy: { createdAt: "asc" } } },
     });
     if (!session) {
