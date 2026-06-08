@@ -3,10 +3,9 @@ import type { Mode } from "@daycode/database";
 type SystemPromptsParams = {
   cwd: string | null;
   mode: Mode;
-  hasTools: boolean;
 };
 
-export function buildSystemPrompts({ cwd, mode, hasTools }: SystemPromptsParams): string {
+export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
   const parts: string[] = [];
 
   parts.push(`you are a expert software engineer working as a coding assistant inside a terminal application.
@@ -39,7 +38,7 @@ export function buildSystemPrompts({ cwd, mode, hasTools }: SystemPromptsParams)
         `);
   }
 
-  if (cwd && mode === "PLAN" && hasTools){
+  if (cwd && mode === "PLAN"){
     parts.push(`
         ## Tool Usage
         You have these tools available:
@@ -56,7 +55,7 @@ export function buildSystemPrompts({ cwd, mode, hasTools }: SystemPromptsParams)
         read 5 files at once, not one at a time ). 
         `)
   }
-  if( cwd && mode === "BUILD" && hasTools ){
+  if( cwd && mode === "BUILD" ){
     parts.push(`
         ## Tool Usage
         You have these tools available:
