@@ -1,4 +1,3 @@
-import type { Mode } from "@daycode/database/enums";
 import { createReadFileTool } from "./read-file";
 import { createListDirectoryTool } from "./list-directory";
 import { createWriteFileTool } from "./write-file";
@@ -6,9 +5,10 @@ import { createEditFileTool } from "./edit-file";
 import { createGrepTool } from "./grep";
 import { createGlobTool } from "./glob";
 import { createBashTool } from "./bash";
+import type { ToolDecision } from "../lib/query-evaluator";
 
 
-export function createTools(cwd: string, mode: Mode) {
+export function createTools(cwd: string, decision: ToolDecision) {
     const readOnlyTools = {
         readFile : createReadFileTool(cwd),
         listDirectory: createListDirectoryTool(cwd),
@@ -16,7 +16,7 @@ export function createTools(cwd: string, mode: Mode) {
         glob: createGlobTool(cwd),
     }
 
-    if (mode === "PLAN") {
+    if (decision === "read-only") {
         return readOnlyTools;
     }
 

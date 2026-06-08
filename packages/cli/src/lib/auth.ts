@@ -32,5 +32,14 @@ export function clearAuth(){
         unlinkSync(AUTH_FILE);      
     } catch (error) {
         // file doesn't exsist
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          (error as { code?: string }).code === "ENOENT"
+        ) {
+          return;
+        }
+        throw error;
     }
 }

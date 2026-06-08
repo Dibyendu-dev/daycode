@@ -13,6 +13,8 @@ import {
   messagePartsSchema,
 } from "@daycode/shared";
 import { isSupportedChatModel, resolveChatModel } from "../lib/model";
+import { classifyIntent } from "../lib/query-router";
+import { evaluateTools, type ToolDecision } from "../lib/query-evaluator";
 import { createTools } from "../tools";
 import { buildSystemPrompts } from "../system-prompt";
 import type { AuthenticatedEnv } from "../middleware/require-auth";
@@ -55,6 +57,7 @@ function buildConversationHistory(
 function getResumableUserMessage(
   messages: {
     role: "USER" | "ASSISTANT" | "ERROR";
+    content: string;
     model: string;
     mode: Mode;
   }[],
@@ -72,15 +75,16 @@ type StreamParams = {
   history: { role: "user" | "assistant"; content: string }[];
   mode: Mode;
   abortController: AbortController;
+  tools: Parameters<typeof aiStreamText>[0]["tools"];
+  hasTools: boolean;
 };
 
 async function streamAIResponse(
   stream: Parameters<Parameters<typeof streamSSE>[1]>[0],
   params: StreamParams,
 ) {
-  const { sessionId, model,cwd, history, mode, abortController } = params;
+  const { sessionId, model, cwd, history, mode, abortController, tools, hasTools } = params;
   const startTime = Date.now();
-  const tools = cwd ? createTools(cwd, mode) : undefined; 
   const parts: MessagePart[] = [];
   const resolvedModel = resolveChatModel(model);
 
@@ -116,7 +120,7 @@ async function streamAIResponse(
   try {
     const result = aiStreamText({
       model: resolvedModel.model,
-      system: buildSystemPrompts({cwd, mode}),
+      system: buildSystemPrompts({cwd, mode, hasTools}),
       messages: history,
       tools,
       stopWhen: tools ? stepCountIs(50) : undefined,
@@ -305,6 +309,19 @@ const app = new Hono<AuthenticatedEnv>()
     }
     activeSeesionResumeIds.add(sessionId);
 
+    let toolDecision: ToolDecision;
+    try {
+      const intent = await classifyIntent(resumableMessage.content);
+      toolDecision = evaluateTools(intent.intent, resumableMessage.mode);
+    } catch {
+      toolDecision = "full";
+    }
+
+    const tools =
+      session.cwd && toolDecision !== "none"
+        ? createTools(session.cwd, toolDecision)
+        : undefined;
+
     const history = buildConversationHistory(session.messages);
     const abortController = new AbortController();
 
@@ -324,6 +341,8 @@ const app = new Hono<AuthenticatedEnv>()
               history,
               mode: resumableMessage.mode,
               abortController,
+              tools,
+              hasTools: !!tools,
             });
           } finally {
             activeSeesionResumeIds.delete(sessionId);
@@ -373,6 +392,19 @@ const app = new Hono<AuthenticatedEnv>()
       },
     });
 
+    let toolDecision: ToolDecision;
+    try {
+      const intent = await classifyIntent(data.content);
+      toolDecision = evaluateTools(intent.intent, data.mode);
+    } catch {
+      toolDecision = "full";
+    }
+
+    const tools =
+      session.cwd && toolDecision !== "none"
+        ? createTools(session.cwd, toolDecision)
+        : undefined;
+
     const history = buildConversationHistory([
       ...session.messages,
       {
@@ -398,6 +430,8 @@ const app = new Hono<AuthenticatedEnv>()
           history,
           mode: data.mode,
           abortController,
+          tools,
+          hasTools: !!tools,
         });
       },
       async (err, stream) => {
