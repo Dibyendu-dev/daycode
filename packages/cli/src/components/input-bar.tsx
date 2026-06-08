@@ -26,32 +26,6 @@ import { isAbsolute, relative, resolve } from "path";
 
 const MAX_VISIBLE_MENTIONS = 8;
 
-// function findWorkspaceRoot(startDirectory: string) {
-//   let currentDirectory = resolve(startDirectory);
-
-//   while (true) {
-//     try {
-//       const packageJson = JSON.parse(
-//         readFileSync(resolve(currentDirectory, "package.json"), "utf8"),
-//       ) as { workspaces?: string[] | { packages?: string[] } };
-
-//       if (packageJson.workspaces) {
-//         return currentDirectory;
-//       }
-//     } catch {
-//       // Ignore missing package.json and continue walking upward.
-//     }
-
-//     const parentDirectory = resolve(currentDirectory, "..");
-//     if (parentDirectory === currentDirectory) {
-//       break;
-//     }
-
-//     currentDirectory = parentDirectory;
-//   }
-
-//   return startDirectory;
-// }
 
 const CURRENT_DIRECTORY = resolve(import.meta.dir, "..", "..", "..", "..");
 const MAX_FALLBACK_MENTION_CANDIDATES = 32;

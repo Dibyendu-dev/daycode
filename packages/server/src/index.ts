@@ -6,12 +6,15 @@ dotenv.config({
 });
 
 import { Hono } from 'hono';
-import { sentry} from "@sentry/hono/bun"
-import { HTTPException} from "hono/http-exception"
+import * as Sentry from "@sentry/hono/bun";
+import { sentry } from "@sentry/hono/bun";
+import { HTTPException } from "hono/http-exception";
 import sessions from "./routes/session";
-import chat from "./routes/chat"
+import chat from "./routes/chat";
+import auth from "./routes/auth";
+import { requireAuth, type AuthenticatedEnv } from "./middleware/require-auth";
 
-const app = new Hono();
+const app = new Hono<AuthenticatedEnv>();
 
 app.use(
   sentry(app, {
@@ -49,7 +52,11 @@ app.onError((error,c)=> {
     return c.json({ error: "Internal server error"},500)
 })
 
-const routes = app.route("/sessions", sessions)
+app.use("/sessions/*",requireAuth);
+app.use("/chat/*",requireAuth);
+
+const routes = app.route("/auth",auth)
+                  .route("/sessions", sessions)
                   .route("/chat", chat)
                   
 export type AppType = typeof routes;
