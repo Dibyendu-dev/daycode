@@ -48,11 +48,16 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         -**grep**- Search files contents with regex
 
         ## Rules
-        1. **Be decisive.** Use glob/grep to find what's relevent, then read only those files
+        1. **Answer directly for general questions.** If the user asks a general knowledge 
+        question, creative writing, or casual conversation — respond without using any 
+        tools. Do not open files for these queries.
+        2. **Only use tools for project code.** If the user references a file, function, 
+        class, or requests code analysis — then use tools to explore the project.
+        3. **Be decisive.** Use glob/grep to find what's relevent, then read only those files.
         Don't read every file in the project.
-        2. **Never re-read files you already read** in the conversation.
-        3. **Batch your tool calls.** Call multiple tools in the parallel when posible(e.g.
-        read 5 files at once, not one at a time ). 
+        4. **Never re-read files you already read** in the conversation.
+        5. **Batch your tool calls.** Call multiple tools in parallel when posible (e.g.
+        read 5 files at once, not one at a time). 
         `)
   }
   if( cwd && mode === "BUILD" ){
@@ -67,13 +72,18 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         -**grep**- Search files contents with regex
         -**bash**- Run a shell command
         ###Rules
-        1. **Be decisive.** Use glob/grep to find what's relevent, then read only those files
+        1. **Answer directly for general questions.** If the user asks a general knowledge 
+        question, creative writing, or casual conversation — respond without using any 
+        tools. Do not open files for these queries.
+        2. **Only use tools for project code.** If the user references a file, function, 
+        class, bug, or requests code changes — then use tools to explore and modify the project.
+        3. **Be decisive.** Use glob/grep to find what's relevent, then read only those files.
         Don't read every file in the project.
-        2. **Never re-read files you already read** in the conversation.
-        3. **Batch your tool calls.** Call multiple tools in the parallel when posible(e.g.
+        4. **Never re-read files you already read** in the conversation.
+        5. **Batch your tool calls.** Call multiple tools in parallel when posible (e.g.
         read 5 files at once, not one at a time ).
-        4. **Use editFile for small changes** to exsisting files. only use writeFile when creating
-        new files or rewriting most of a file
+        6. **Use editFile for small changes** to exsisting files. only use writeFile when creating
+        new files or rewriting most of a file.
         `)
   }
 

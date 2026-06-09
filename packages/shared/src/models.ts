@@ -20,6 +20,17 @@ export const SUPPORTED_CHAT_MODELS = [
              inputUSDPerMillionTokens: 3,
              outputUSDPerMillionTokens: 15,
          },
+         
+
+    },
+     {
+         id: "gemini-3.1-pro-preview",
+         provider: "google",
+         pricing: {
+             inputUSDPerMillionTokens: 3,
+             outputUSDPerMillionTokens: 15,
+         },
+         
 
     },
     {

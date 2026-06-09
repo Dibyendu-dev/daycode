@@ -13,6 +13,7 @@ import {
   messagePartsSchema,
 } from "@daycode/shared";
 import { isSupportedChatModel, resolveChatModel } from "../lib/model";
+import { withRetry } from "../lib/retry";
 import { createTools } from "../tools";
 import { buildSystemPrompts } from "../system-prompt";
 import type { AuthenticatedEnv } from "../middleware/require-auth";
@@ -26,7 +27,10 @@ const submitSchema = z.object({
 
 const submitValidator = zValidator("json", submitSchema, (result, c) => {
   if (!result.success) {
-    return c.json({ error: "Invalid request body" }, 400);
+    const message = result.error.issues
+      .map((i) => `${i.path.join(".")}: ${i.message}`)
+      .join("; ");
+    return c.json({ error: message }, 400);
   }
 });
 
@@ -113,12 +117,13 @@ async function streamAIResponse(
     });
   };
 
-  try {
+  const streamAndProcess = async () => {
     const result = aiStreamText({
       model: resolvedModel.model,
       system: buildSystemPrompts({cwd, mode}),
       messages: history,
       tools,
+      maxRetries: 0,
       stopWhen: tools ? stepCountIs(50) : undefined,
       abortSignal: abortController.signal,
       providerOptions: resolvedModel.providerOptions,
@@ -212,7 +217,7 @@ async function streamAIResponse(
 
     if (stream.aborted || abortController.signal.aborted) {
       await persistInterruptedMessage();
-      return;
+      return "interrupted";
     }
 
     const elapsedMs = Date.now() - startTime;
@@ -247,6 +252,11 @@ async function streamAIResponse(
     };
 
     await stream.writeSSE({ event: "done", data: JSON.stringify(doneEvent) });
+  };
+
+  try {
+    const status = await withRetry(streamAndProcess, abortController.signal);
+    if (status === "interrupted") return;
   } catch (error) {
     if (abortController.signal.aborted) {
       await persistInterruptedMessage();
