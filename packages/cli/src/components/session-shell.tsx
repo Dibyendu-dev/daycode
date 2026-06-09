@@ -63,10 +63,10 @@ export function SessionShell({
             </box>
           ) : null}
         </box>
-        <box flexDirection="row" gap={1} marginLeft="auto">
+        {/* <box flexDirection="row" gap={1} marginLeft="auto">
           <text>tab</text>
           <text attributes={TextAttributes.DIM}>agents</text>
-        </box>
+        </box> */}
       </box>
     </box>
   );

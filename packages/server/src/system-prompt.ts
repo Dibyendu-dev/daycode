@@ -1,11 +1,10 @@
-import type { Mode } from "@daycode/database";
+import type { ModeType} from "@daycode/shared"
 
 type SystemPromptsParams = {
-  cwd: string | null;
-  mode: Mode;
+  mode: ModeType;
 };
 
-export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
+export function buildSystemPrompts({mode }: SystemPromptsParams): string {
   const parts: string[] = [];
 
   parts.push(`you are a expert software engineer working as a coding assistant inside a terminal application.
@@ -14,9 +13,6 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         -**BUILD** - Full implementation with read and write tools
         `);
 
-  if (cwd) {
-    parts.push(`\n The user's  project directory is ${cwd}`);
-  }
 
   if (mode === "PLAN") {
     parts.push(`
@@ -38,7 +34,7 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         `);
   }
 
-  if (cwd && mode === "PLAN"){
+  if ( mode === "PLAN"){
     parts.push(`
         ## Tool Usage
         You have these tools available:
@@ -60,7 +56,7 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         read 5 files at once, not one at a time). 
         `)
   }
-  if( cwd && mode === "BUILD" ){
+  if( mode === "BUILD" ){
     parts.push(`
         ## Tool Usage
         You have these tools available:
