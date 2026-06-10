@@ -4,7 +4,7 @@
     "private": true,
     "exports": {
         ".": "./src/index.ts",
-        "./client": "./src/client.ts",
+        "./client": "./src/client.ts"
     },
     "scripts": {
         "db:generate": "bunx prisma generate"
