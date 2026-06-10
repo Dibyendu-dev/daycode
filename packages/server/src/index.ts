@@ -13,7 +13,7 @@ import sessions from "./routes/session";
 import chat from "./routes/chat";
 import auth from "./routes/auth";
 import { requireAuth, type AuthenticatedEnv } from "./middleware/require-auth";
-
+import billing from "./routes/billing";
 const app = new Hono<AuthenticatedEnv>();
 
 app.use(
@@ -54,10 +54,13 @@ app.onError((error,c)=> {
 
 app.use("/sessions/*",requireAuth);
 app.use("/chat/*",requireAuth);
+app.use("/billing/checkout",requireAuth);
+app.use("/billing/portal",requireAuth);
 
 const routes = app.route("/auth",auth)
                   .route("/sessions", sessions)
                   .route("/chat", chat)
+                  .route("/billing",billing)
                   
 export type AppType = typeof routes;
 

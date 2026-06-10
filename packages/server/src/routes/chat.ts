@@ -19,13 +19,17 @@ import {
 } from "@daycode/shared";
 import { buildSystemPrompts } from "../system-prompt";
 import type { AuthenticatedEnv } from "../middleware/require-auth";
+import { requireCreditBalance } from "../middleware/require-credits-balance";
+import { ingestAiUsage } from "../lib/polar";
 import { isSupportedChatModel, resolveChatModel } from "../lib/model";
-import { error } from "console";
+import { calculateCreditsForUsage } from "../lib/credits";
+
 
 type ChatMessageMetadata = {
   mode?: ModeType;
   model?: string;
   duration?: number;
+  usage?: LanguageModelUsage;
 }
 
 type DaycodeUIMessage = UIMessage<ChatMessageMetadata, never, InferUITools<ToolContracts>>;
@@ -62,6 +66,7 @@ function hasPendingToolCalls(message: DaycodeUIMessage) {
 const app = new Hono<AuthenticatedEnv>()
     .post(
       "/",
+      requireCreditBalance,
       submitValidator,
       async (c)=> {
         const userId = c.get("userId");
@@ -103,12 +108,16 @@ const app = new Hono<AuthenticatedEnv>()
         });
 
         const modelMessages =await convertToModelMessages(nextMessages, {tools});
+        let completedUsage: LanguageModelUsage | null = null;
         const result = streamText({
           model: resolvedModel.model,
           system: buildSystemPrompts({mode}),
           messages: modelMessages,
           tools,
           providerOptions: resolvedModel.providerOptions,
+          onFinish(event) {
+            completedUsage = event.totalUsage
+          },
         })
         return result.toUIMessageStreamResponse<DaycodeUIMessage>({
           originalMessages: nextMessages,
@@ -121,9 +130,49 @@ const app = new Hono<AuthenticatedEnv>()
             return {
               mode,
               model,
-              durationMs: Date.now()- startTime,
+              durationMs: Date.now() - startTime,
+              ...(completedUsage ? {usage: completedUsage} : {}),
             }
+          },
+          async onFinish(event) {
+            if (event.isAborted) return;
+            if (hasPendingToolCalls(event.responseMessage)) return;
+
+            await db.session.update({
+              where: {id, userId},
+              data: {
+                messages: event.messages as unknown as Prisma.InputJsonValue,
+              }
+            })
+
+            if(!completedUsage) return;
+            
+            try {
+              const billableUsage = calculateCreditsForUsage({
+                provider: resolvedModel.provider,
+                model: resolvedModel.modelId,
+                usage: completedUsage
+              })
+
+              await ingestAiUsage({
+                externalCustomerId: userId,
+                eventId: `chat-message:${event.responseMessage.id}`,
+                credits: billableUsage.credits,
+              })
+            } catch (error) {
+              console.error("failed to ingest polar ai usage for chat message", {
+                error,
+                sessionId: id,
+                messageId: event.responseMessage.id,
+                userId,
+              })
+            }
+          },
+          onError(error){
+            return error instanceof Error ? error.message : String(error);
           }
         })
       }
     )
+
+  export default app;
