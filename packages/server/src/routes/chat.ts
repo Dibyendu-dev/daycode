@@ -19,10 +19,10 @@ import {
 } from "@daycode/shared";
 import { buildSystemPrompts } from "../system-prompt";
 import type { AuthenticatedEnv } from "../middleware/require-auth";
-import { requireCreditBalance } from "../middleware/require-credits-balance";
-import { ingestAiUsage } from "../lib/polar";
+// import { requireCreditBalance } from "../middleware/require-credits-balance";
 import { isSupportedChatModel, resolveChatModel } from "../lib/model";
 import { calculateCreditsForUsage } from "../lib/credits";
+import { ingestAiUsage } from "../lib/polar";
 
 
 type ChatMessageMetadata = {
@@ -66,7 +66,7 @@ function hasPendingToolCalls(message: DaycodeUIMessage) {
 const app = new Hono<AuthenticatedEnv>()
     .post(
       "/",
-      requireCreditBalance,
+      // requireCreditBalance,
       submitValidator,
       async (c)=> {
         const userId = c.get("userId");

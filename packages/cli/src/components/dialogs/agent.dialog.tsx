@@ -1,16 +1,16 @@
 import { useCallback} from "react";
 import { useDialog } from "../providers/dialog";
 import { DialogSearchList } from "../dialog-search-list";
-import  { Mode } from "@daycode/database/enums";
+import  { Mode, type ModeType } from "@daycode/shared";
 
-const AVAILABLE_MODES:Mode[] = [Mode.BUILD, Mode.PLAN]
+const AVAILABLE_MODES:ModeType[] = [Mode.BUILD, Mode.PLAN]
 
 type AgentDialogContentProps = {
-  currentMode: Mode;
-  onSelectMode: (mode:Mode) => void;
+  currentMode: ModeType;
+  onSelectMode: (mode:ModeType) => void;
 }
 
-function getModeLabel(mode:Mode) {
+function getModeLabel(mode:ModeType) {
   return mode === Mode.PLAN ? "Plan": "Build"
 }
 
@@ -18,7 +18,7 @@ export const AgentDialogContent = ({currentMode,onSelectMode}:AgentDialogContent
   const dialog = useDialog();
  
   const handleSelect = useCallback(
-    (nextMode: Mode) => {
+    (nextMode: ModeType) => {
       onSelectMode(nextMode)
       dialog.closeDialog();
     },

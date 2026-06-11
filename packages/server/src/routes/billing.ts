@@ -21,6 +21,6 @@ const app = new Hono<AuthenticatedEnv>()
             })
         })
     })
-    .get("/sucess",(c)=> c.text("done, you can close the tab and return to daycode"))
+    .get("/success",(c)=> c.text("done, you can close the tab and return to daycode"))
 
 export default app;

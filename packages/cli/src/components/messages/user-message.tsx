@@ -1,8 +1,8 @@
 import { useTheme } from "../providers/theme";
-import { Mode } from "@daycode/database/enums";
+import { Mode , type ModeType} from "@daycode/shared";
 type props = {
     message: string;
-    mode: Mode;
+    mode: ModeType;
 }
 
 export function UserMessage({message,mode}:props) {
