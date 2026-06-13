@@ -3,9 +3,6 @@ name: Build CLI
 on:
   push:
     branches: [main]
-    paths:
-      - "packages/cli/**"
-      - "packages/shared/**"
   workflow_dispatch:
 
 jobs:
