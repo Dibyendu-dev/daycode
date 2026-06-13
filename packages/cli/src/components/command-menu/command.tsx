@@ -4,7 +4,7 @@ import { AgentDialogContent } from "../dialogs/agent.dialog";
 import { SessionDialogContent } from "../dialogs/session.dialog";
 import { ThemeDialogContent } from "../dialogs/theme.dialog";
 import type { Command } from "./types";
-import { ModelName } from "../../../../database/generated/prisma/internal/prismaNamespace";
+import { openBillingPortal, openUpgradeCheckout } from "../../lib/upgrade";
 import { performLogin } from "../../lib/oauth";
 import { clearAuth } from "../../lib/auth";
 
@@ -95,6 +95,14 @@ export const COMMANDS: Command[] = [
         value: "/upgrade",
         action: async (ctx) => {
             ctx.toast.show({message: "Opening upgrade portal...",variant: "info"});
+            try {
+                await openUpgradeCheckout();
+            ctx.toast.show({message: "Checkout opened in browser",variant: "success"});
+            } catch (error) {
+                 const message = error instanceof Error
+                ? error.message : " failed to open checkout!"
+                ctx.toast.show({message,variant: "error"});
+            }
         }
     },
     {
@@ -103,6 +111,14 @@ export const COMMANDS: Command[] = [
         value: "/usage",
         action: async (ctx) => {
             ctx.toast.show({message: "Opening billing portal...",variant: "info"});
+            try {
+                await openBillingPortal();
+                 ctx.toast.show({message: "Billing portal opened in browser",variant: "success"});
+            } catch (error) {
+                 const message = error instanceof Error
+                ? error.message : " failed to open billing portal!"
+                ctx.toast.show({message,variant: "error"});
+            }
         }
     },
     {

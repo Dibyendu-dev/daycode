@@ -19,7 +19,7 @@ import { useDialog } from "./providers/dialog";
 import { useTheme } from "./providers/theme";
 import { useNavigate } from "react-router";
 import { usePromptConfig } from "./providers/prompt-config";
-import { Mode } from "@daycode/database/enums";
+import { Mode } from "@daycode/shared";
 import { readFileSync } from "fs";
 import { readdir } from "fs/promises";
 import { isAbsolute, relative, resolve } from "path";

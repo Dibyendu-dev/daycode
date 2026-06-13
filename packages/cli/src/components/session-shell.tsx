@@ -41,7 +41,7 @@ export function SessionShell({
         stickyScroll
         stickyStart="bottom"
       >
-        <box gap={1}>{children}</box>
+        <box>{children}</box>
       </scrollbox>
       <box flexShrink={0}>
         <InputBar onSubmit={onSubmit} disabled={inputDisabled} />
@@ -63,10 +63,10 @@ export function SessionShell({
             </box>
           ) : null}
         </box>
-        <box flexDirection="row" gap={1} marginLeft="auto">
+        {/* <box flexDirection="row" gap={1} marginLeft="auto">
           <text>tab</text>
           <text attributes={TextAttributes.DIM}>agents</text>
-        </box>
+        </box> */}
       </box>
     </box>
   );

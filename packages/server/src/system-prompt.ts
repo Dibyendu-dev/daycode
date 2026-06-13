@@ -1,11 +1,10 @@
-import type { Mode } from "@daycode/database";
+import type { ModeType} from "@daycode/shared"
 
 type SystemPromptsParams = {
-  cwd: string | null;
-  mode: Mode;
+  mode: ModeType;
 };
 
-export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
+export function buildSystemPrompts({mode }: SystemPromptsParams): string {
   const parts: string[] = [];
 
   parts.push(`you are a expert software engineer working as a coding assistant inside a terminal application.
@@ -14,9 +13,6 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         -**BUILD** - Full implementation with read and write tools
         `);
 
-  if (cwd) {
-    parts.push(`\n The user's  project directory is ${cwd}`);
-  }
 
   if (mode === "PLAN") {
     parts.push(`
@@ -38,7 +34,7 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         `);
   }
 
-  if (cwd && mode === "PLAN"){
+  if ( mode === "PLAN"){
     parts.push(`
         ## Tool Usage
         You have these tools available:
@@ -51,16 +47,21 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         1. **Answer directly for general questions.** If the user asks a general knowledge 
         question, creative writing, or casual conversation — respond without using any 
         tools. Do not open files for these queries.
-        2. **Only use tools for project code.** If the user references a file, function, 
+        2. **Greenfield vs Brownfield.** If the user asks to create something new (a 
+        new project, website, app, design, component, or feature) — respond with your 
+        plan directly. Do NOT use any tools (readFile, listDirectory, glob, grep). 
+        Tools are ONLY for exploring the existing codebase when the user references 
+        or asks about it.
+        3. **Only use tools for project code.** If the user references a file, function, 
         class, or requests code analysis — then use tools to explore the project.
-        3. **Be decisive.** Use glob/grep to find what's relevent, then read only those files.
+        4. **Be decisive.** Use glob/grep to find what's relevent, then read only those files.
         Don't read every file in the project.
-        4. **Never re-read files you already read** in the conversation.
-        5. **Batch your tool calls.** Call multiple tools in parallel when posible (e.g.
+        5. **Never re-read files you already read** in the conversation.
+        6. **Batch your tool calls.** Call multiple tools in parallel when posible (e.g.
         read 5 files at once, not one at a time). 
         `)
   }
-  if( cwd && mode === "BUILD" ){
+  if( mode === "BUILD" ){
     parts.push(`
         ## Tool Usage
         You have these tools available:
@@ -75,14 +76,19 @@ export function buildSystemPrompts({ cwd, mode }: SystemPromptsParams): string {
         1. **Answer directly for general questions.** If the user asks a general knowledge 
         question, creative writing, or casual conversation — respond without using any 
         tools. Do not open files for these queries.
-        2. **Only use tools for project code.** If the user references a file, function, 
+        2. **Greenfield vs Brownfield.** If the user asks to create something new (a 
+        new project, website, app, design, component, or feature) — respond with your 
+        plan directly. Do NOT use any tools (readFile, listDirectory, glob, grep). 
+        Tools are ONLY for exploring the existing codebase when the user references 
+        or asks about it.
+        3. **Only use tools for project code.** If the user references a file, function, 
         class, bug, or requests code changes — then use tools to explore and modify the project.
-        3. **Be decisive.** Use glob/grep to find what's relevent, then read only those files.
+        4. **Be decisive.** Use glob/grep to find what's relevent, then read only those files.
         Don't read every file in the project.
-        4. **Never re-read files you already read** in the conversation.
-        5. **Batch your tool calls.** Call multiple tools in parallel when posible (e.g.
+        5. **Never re-read files you already read** in the conversation.
+        6. **Batch your tool calls.** Call multiple tools in parallel when posible (e.g.
         read 5 files at once, not one at a time ).
-        6. **Use editFile for small changes** to exsisting files. only use writeFile when creating
+        7. **Use editFile for small changes** to exsisting files. only use writeFile when creating
         new files or rewriting most of a file.
         `)
   }
