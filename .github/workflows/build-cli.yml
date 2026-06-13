@@ -5,42 +5,51 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run --cwd packages/cli build
+      - run: bun --version
+      - run: bun install --frozen-lockfile 2>&1
+      - run: bun run --cwd packages/cli build 2>&1
       - uses: actions/upload-artifact@v4
         with:
           name: daycode-windows-x64
           path: packages/cli/daycode.exe
+        if: success()
 
   build-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run --cwd packages/cli build
+      - run: bun --version
+      - run: bun install --frozen-lockfile 2>&1
+      - run: bun run --cwd packages/cli build 2>&1
       - uses: actions/upload-artifact@v4
         with:
           name: daycode-linux-x64
           path: packages/cli/daycode
+        if: success()
 
   build-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run --cwd packages/cli build
+      - run: bun --version
+      - run: bun install --frozen-lockfile 2>&1
+      - run: bun run --cwd packages/cli build 2>&1
       - uses: actions/upload-artifact@v4
         with:
           name: daycode-darwin-arm64
           path: packages/cli/daycode
+        if: success()
 
   create-release:
     needs: [build-windows, build-linux, build-macos]
