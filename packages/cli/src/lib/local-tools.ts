@@ -36,7 +36,7 @@ export async function executeLocalTool(
     mode === Mode.PLAN &&
     !["readFile", "listDirectory", "glob", "grep"].includes(toolName)
   ) {
-    throw new Error(`Tool ${toolName} is available in plan mode`);
+    throw new Error(`Tool ${toolName} is not available in plan mode`);
   }
   switch (toolName) {
     case "readFile": {

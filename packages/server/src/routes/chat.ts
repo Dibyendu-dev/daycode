@@ -28,7 +28,7 @@ import { ingestAiUsage } from "../lib/polar";
 type ChatMessageMetadata = {
   mode?: ModeType;
   model?: string;
-  duration?: number;
+  durationMs?: number;
   usage?: LanguageModelUsage;
 }
 
@@ -84,6 +84,7 @@ const app = new Hono<AuthenticatedEnv>()
         const resolvedModel = resolveChatModel(model);
         const previousMessages = Array.isArray(session.messages)
           ? (session.messages as unknown as DaycodeUIMessage[])
+              .filter((m) => !(m.role === "assistant" && m.parts.length === 0))
           : []
 
         const mergedMessages = [...previousMessages];
@@ -137,6 +138,7 @@ const app = new Hono<AuthenticatedEnv>()
           async onFinish(event) {
             if (event.isAborted) return;
             if (hasPendingToolCalls(event.responseMessage)) return;
+            if (event.responseMessage.parts.length === 0) return;
 
             await db.session.update({
               where: {id, userId},

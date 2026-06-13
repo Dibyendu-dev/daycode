@@ -4,7 +4,7 @@ export type ModelPricing = {
 
 }
 
-export type SupportedProvider = "anthropic" | "openai" | "google";
+export type SupportedProvider = "anthropic" | "openai" | "google" | "deepseek";
 
 type SupportedChatModelDefination = {
     id : string;
@@ -15,6 +15,16 @@ type SupportedChatModelDefination = {
 export const SUPPORTED_CHAT_MODELS = [
     {
          id: "gemini-3.5-flash",
+         provider: "google",
+         pricing: {
+             inputUSDPerMillionTokens: 3,
+             outputUSDPerMillionTokens: 15,
+         },
+         
+
+    },
+    {
+         id: "gemini-2.0-flash",
          provider: "google",
          pricing: {
              inputUSDPerMillionTokens: 3,
@@ -83,7 +93,14 @@ export const SUPPORTED_CHAT_MODELS = [
              outputUSDPerMillionTokens: 1.25,
          },
     },
-
+    {
+         id: "deepseek-chat",
+         provider: "deepseek",
+         pricing: {
+             inputUSDPerMillionTokens: 0.27,
+             outputUSDPerMillionTokens: 1.10,
+         },
+    },
 ] as const satisfies readonly SupportedChatModelDefination[];
 
 export type SupportedChatModel = (typeof SUPPORTED_CHAT_MODELS) [number];

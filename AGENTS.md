@@ -1,7 +1,8 @@
 # daycode
 
 ## About
-TUI app (terminal UI) built with OpenTUI (`@opentui/react`). Created via `bun create tui`.
+AI-Powered Terminal Coding Assistant (Daycode)
+Built a full-stack AI coding assistant that runs entirely in the terminal, featuring real-time streaming chat with multi-model AI support (Gemini, Claude, GPT), OAuth authentication, and a credit-based billing system. Architected as a Bun monorepo with a TypeScript server (Hono) and an interactive OpenTUI client. Implemented multi-mode AI interaction — PLAN mode for read-only code analysis and BUILD mode for file manipulation and command execution — along with smart autocomplete for file/directory mentions. Integrated Clerk for authentication, Neon PostgreSQL for session persistence, Polar.sh for usage metering, and Sentry for error monitoring.
 
 ## Commands
 - `bun install` — install all workspace deps from root
