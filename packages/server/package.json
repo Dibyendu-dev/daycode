@@ -8,7 +8,7 @@
     "scripts": {
         "dev": "bun run --watch --env-file=../../.env src/index.ts",
         "build": "bun build src/index.ts  --outdir dist --target bun",
-        "postinstall": "bun run --cwd ../database db:generate"
+        "postinstall": "bun -e \"process.env.DATABASE_URL&&require('child_process').execSync('bun run --cwd ../database db:generate',{stdio:'inherit'})\""
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^3.0.81",
