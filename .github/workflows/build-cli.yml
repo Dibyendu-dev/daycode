@@ -1,0 +1,67 @@
+name: Build CLI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/cli/**"
+      - "packages/shared/**"
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run --cwd packages/cli build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: daycode-windows-x64
+          path: packages/cli/daycode.exe
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run --cwd packages/cli build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: daycode-linux-x64
+          path: packages/cli/daycode
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run --cwd packages/cli build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: daycode-darwin-arm64
+          path: packages/cli/daycode
+
+  create-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+      - run: |
+          mv daycode-windows-x64/daycode.exe daycode-windows-x64.exe
+          mv daycode-linux-x64/daycode daycode-linux-x64
+          mv daycode-darwin-arm64/daycode daycode-darwin-arm64
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          make_latest: true
+          files: |
+            daycode-windows-x64.exe
+            daycode-linux-x64
+            daycode-darwin-arm64
+          body: "Automated build of latest commit."
