@@ -1,0 +1,12 @@
+{
+  "name": "@daycode/web",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun"
+  },
+  "dependencies": {
+    "hono": "^4.12.23"
+  }
+}

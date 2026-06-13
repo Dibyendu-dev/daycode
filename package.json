@@ -12,6 +12,7 @@
   "scripts": {
     "dev:cli": "bun run --cwd packages/cli dev",
     "dev:server": "bun run --cwd packages/server dev",
+    "dev:web": "bun run --cwd packages/web dev",
 
     "test": "echo \"Error: no test specified\" && exit 1"
   }

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>daycode — AI-Powered Terminal Coding Assistant</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="cursor-glow"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">daycode</span>
+        <span class="logo-bracket">]</span>
+      </a>
+      <nav class="nav">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="https://github.com" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <a href="/download" class="nav-cta">Download</a>
+      </nav>
+      <button class="mobile-menu-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            v1.0.0 — Open Source
+          </div>
+
+          <h1 class="hero-title">
+            The <span class="gradient-text">AI-Powered</span><br>
+            Terminal Coding Assistant
+          </h1>
+
+          <p class="hero-desc">
+            Daycode is an open-source AI coding agent that runs entirely in your terminal.
+            Real-time streaming chat with multi-model AI, OAuth authentication,
+            and credit-based billing &mdash; all from the command line.
+          </p>
+
+          <div class="hero-actions">
+            <a href="/download" class="btn btn-primary">
+              <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download for Windows
+              <span class="btn-meta">daycode.exe · 108 MB</span>
+            </a>
+
+            <div class="install-snippet">
+              <div class="snippet-header">
+                <span class="snippet-dots">
+                  <span class="snippet-dot"></span>
+                  <span class="snippet-dot"></span>
+                  <span class="snippet-dot"></span>
+                </span>
+                <span class="snippet-label">terminal</span>
+              </div>
+              <div class="snippet-body">
+                <span class="snippet-prompt">$</span>
+                <code class="snippet-code">curl -fsSL https://daycode.ai/install | bash</code>
+                <button class="snippet-copy" aria-label="Copy command" data-copy="curl -fsSL https://daycode.ai/install | bash">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-value">5+</span>
+              <span class="stat-label">AI Models</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-value">2</span>
+              <span class="stat-label">Modes · Plan &amp; Build</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-value">100%</span>
+              <span class="stat-label">Terminal Native</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-value">MIT</span>
+              <span class="stat-label">Open Source</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-bg">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-bg-glow"></div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">// features</span>
+          <h2 class="section-title">Everything you need,<br>right in the terminal</h2>
+          <p class="section-desc">
+            Daycode combines the power of modern AI with the simplicity of the command line.
+            No IDE required, no context switching &mdash; just you and your terminal.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <path d="M2 12h20"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Multi-Model AI</h3>
+            <p class="feature-desc">Switch between Gemini, Claude, GPT, and DeepSeek on the fly. Each model brings different strengths to your workflow.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Real-Time Streaming</h3>
+            <p class="feature-desc">See AI responses stream in character by character. Low-latency, real-time chat experience built on SSE and Hono.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 17 10 11 4 5"/>
+                <line x1="12" y1="19" x2="20" y2="19"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Terminal Native</h3>
+            <p class="feature-desc">Built with OpenTUI, not Electron. Runs entirely in your terminal with zero overhead. No IDE, no browser tab needed.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">OAuth Authentication</h3>
+            <p class="feature-desc">Secure login with Clerk OAuth. Your sessions and preferences sync across devices with zero-config setup.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Credit-Based Billing</h3>
+            <p class="feature-desc">Pay only for what you use. Integrated with Polar.sh for usage metering and Stripe checkout. Transparent pricing.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Smart Modes</h3>
+            <p class="feature-desc">PLAN mode for read-only code analysis, BUILD mode for file manipulation and command execution. Always in control.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-card">
+          <h2 class="cta-title">Start coding with AI in your terminal</h2>
+          <p class="cta-desc">Download the binary and start a session in seconds. No signup walls, no complex setup.</p>
+          <div class="cta-actions">
+            <a href="/download" class="btn btn-primary btn-lg">
+              <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download daycode.exe
+            </a>
+            <span class="cta-or">or</span>
+            <button class="btn btn-ghost btn-lg" data-copy="bunx @daycode/cli">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              bunx @daycode/cli
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">daycode</span>
+            <span class="logo-bracket">]</span>
+          </a>
+          <p class="footer-tagline">AI-powered terminal coding assistant.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Product</h4>
+            <a href="#features">Features</a>
+            <a href="/download">Download</a>
+            <a href="#">Changelog</a>
+          </div>
+          <div class="footer-col">
+            <h4>Community</h4>
+            <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            <a href="#">Discord</a>
+            <a href="#">Twitter</a>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">License (MIT)</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 daycode. MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

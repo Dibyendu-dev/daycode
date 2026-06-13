@@ -72,6 +72,12 @@
         "zod": "^4.4.3",
       },
     },
+    "packages/web": {
+      "name": "@daycode/web",
+      "dependencies": {
+        "hono": "^4.12.23",
+      },
+    },
   },
   "packages": {
     "@ai-sdk/anthropic": ["@ai-sdk/anthropic@3.0.81", "", { "dependencies": { "@ai-sdk/provider": "3.0.10", "@ai-sdk/provider-utils": "4.0.27" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-B1JDd9Ugq9R5AgIaW3674lhGCMMYJcPUxnrZh8fzbGojgg4QvHFRv6eZahGQAUsmGHbcf74G9bdSBDLWQGY2GA=="],
@@ -99,6 +105,8 @@
     "@daycode/server": ["@daycode/server@workspace:packages/server"],
 
     "@daycode/shared": ["@daycode/shared@workspace:packages/shared"],
+
+    "@daycode/web": ["@daycode/web@workspace:packages/web"],
 
     "@electric-sql/pglite": ["@electric-sql/pglite@0.4.1", "", {}, "sha512-mZ9NzzUSYPOCnxHH1oAHPRzoMFJHY472raDKwXl/+6oPbpdJ7g8LsCN4FSaIIfkiCKHhb3iF/Zqo3NYxaIhU7Q=="],
 
