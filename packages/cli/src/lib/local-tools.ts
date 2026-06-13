@@ -36,7 +36,7 @@ export async function executeLocalTool(
     mode === Mode.PLAN &&
     !["readFile", "listDirectory", "glob", "grep"].includes(toolName)
   ) {
-    throw new Error(`Tool ${toolName} is available in plan mode`);
+    throw new Error(`Tool ${toolName} is not available in plan mode`);
   }
   switch (toolName) {
     case "readFile": {
@@ -92,7 +92,7 @@ export async function executeLocalTool(
       })) {
         if (match.includes("node_modules")) continue;
         if (files.length >= MAX_RESULTS) {
-          truncated: true;
+            truncated = true;
           break;
         }
         files.push(relative(cwd, resolve(resolved, match)));

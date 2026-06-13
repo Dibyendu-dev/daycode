@@ -1,5 +1,5 @@
 import { anthropic} from "@ai-sdk/anthropic"
-import { openai} from "@ai-sdk/openai"
+import { createOpenAI, openai} from "@ai-sdk/openai"
 import { google } from "@ai-sdk/google"
 import {
     findSupportedChatModel,
@@ -11,9 +11,15 @@ import type { LanguageModel} from "ai";
 import type { ProviderOptions} from "@ai-sdk/provider-utils"
 
 
+const deepseek = createOpenAI({
+  baseURL: "https://api.deepseek.com/v1",
+  apiKey: process.env.DEEPSEEK_API_KEY,
+})
+
 type AnthropicModelId = Extract<SupportedChatModel, { provider : "anthropic"}>["id"]
 type OpenAIModelId = Extract<SupportedChatModel, { provider : "openai"}>["id"]
 type GoogleModelId = Extract<SupportedChatModel, { provider : "google"}>["id"]
+type DeepSeekModelId = Extract<SupportedChatModel, { provider : "deepseek"}>["id"]
 
 export type ResolvedModel = {
     model : LanguageModel;
@@ -93,6 +99,14 @@ function resolveGoogleModel(modelId: GoogleModelId):ResolvedModel{
     }
 }
 
+function resolveDeepSeekModel(modelId: DeepSeekModelId):ResolvedModel{
+    return {
+        model: deepseek.chat(modelId),
+        provider: "deepseek",
+        modelId,
+    }
+}
+
 function resolveSupportedChatModel(model: SupportedChatModel):ResolvedModel{
     const provider = model.provider;
 
@@ -103,6 +117,8 @@ function resolveSupportedChatModel(model: SupportedChatModel):ResolvedModel{
             return resolveOpenAIModel(model.id);
             case "google":
                 return resolveGoogleModel(model.id);
+        case "deepseek":
+            return resolveDeepSeekModel(model.id);
          default:
             return assertUnsupportedProvider(provider);
     }

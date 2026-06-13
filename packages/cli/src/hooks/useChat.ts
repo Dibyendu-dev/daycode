@@ -15,8 +15,7 @@ import {
 import { apiClient } from "../lib/api-client";
 import { getAuth } from "../lib/auth";
 import { executeLocalTool } from "../lib/local-tools";
-import { error } from "node:console";
-import { abort } from "node:process";
+
 
 export type ChatMessageMetadata = {
   mode?: ModeType;

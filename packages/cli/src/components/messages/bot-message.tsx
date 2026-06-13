@@ -111,7 +111,7 @@ export function BotMessage({
                     part.state !== "output-error"
                       ? "..."
                       : ""}
-                      {part.state !== "output-error" ? `${part.errorText}` : ""}
+                       {part.state === "output-error" && part.errorText ? ` ${part.errorText}` : ""}
                   </text>
                 </box>
               );

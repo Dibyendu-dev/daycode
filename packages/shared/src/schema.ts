@@ -75,7 +75,7 @@ export const readOnlyToolContracts = {
   glob: tool({
     description:
       "Find files matching a glob pattern. Returns file paths relative to the project root. Skip node_modules and hidden directories.",
-    inputSchema: toolInputSchemas.grep,
+    inputSchema: toolInputSchemas.glob,
   }),
   grep: tool({
     description:
