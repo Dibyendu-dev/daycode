@@ -4,18 +4,23 @@ import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-const rootDir = process.cwd();
+const projectRoot = join(import.meta.dirname, "..");
+const publicDir = join(projectRoot, "src", "public");
+const cliDir = join(projectRoot, "..", "cli");
 
 const app = new Hono();
 
 app.get("/download", async (c) => {
-  const publicPath = join(rootDir, "src", "public", "daycode.exe");
-  const cliPath = join(rootDir, "..", "cli", "daycode.exe");
+  const exeName = existsSync(join(publicDir, "daycode.exe")) ? "daycode.exe" : "daycode";
+  const publicPath = join(publicDir, exeName);
+  const cliFallback = existsSync(join(cliDir, "daycode.exe"))
+    ? join(cliDir, "daycode.exe")
+    : join(cliDir, "daycode");
 
-  const filePath = existsSync(publicPath) ? publicPath : cliPath;
+  const filePath = existsSync(publicPath) ? publicPath : cliFallback;
 
   if (!existsSync(filePath)) {
-    return c.text("daycode.exe not found. Build the CLI package first with `bun run --cwd packages/cli build`.", 404);
+    return c.text("daycode binary not found. Ensure the CLI is built first.", 404);
   }
 
   const file = await readFile(filePath);
@@ -30,6 +35,6 @@ app.get("/download", async (c) => {
   });
 });
 
-app.use("/*", serveStatic({ root: join(rootDir, "src", "public") }));
+app.use("/*", serveStatic({ root: publicDir }));
 
 export default { port: 8080, fetch: app.fetch };
