@@ -92,7 +92,7 @@ export async function executeLocalTool(
       })) {
         if (match.includes("node_modules")) continue;
         if (files.length >= MAX_RESULTS) {
-          truncated: true;
+            truncated = true;
           break;
         }
         files.push(relative(cwd, resolve(resolved, match)));

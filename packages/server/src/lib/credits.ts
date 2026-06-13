@@ -76,7 +76,7 @@ function estimateCostUsd(
 function convertUsdCredits(estimatedCostUsd: number) {
   if (estimatedCostUsd <= 0) return 0;
 
-  return Math.max(1, Math.ceil(estimatedCostUsd) / USD_PER_CREDIT);
+  return Math.max(1, Math.ceil(estimatedCostUsd / USD_PER_CREDIT));
 }
 
 export function calculateCreditsForUsage({

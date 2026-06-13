@@ -23,16 +23,6 @@ export const SUPPORTED_CHAT_MODELS = [
          
 
     },
-    {
-         id: "gemini-2.0-flash",
-         provider: "google",
-         pricing: {
-             inputUSDPerMillionTokens: 3,
-             outputUSDPerMillionTokens: 15,
-         },
-         
-
-    },
      {
          id: "gemini-3.1-pro-preview",
          provider: "google",
