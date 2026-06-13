@@ -4,11 +4,13 @@ import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
+const rootDir = process.cwd();
+
 const app = new Hono();
 
 app.get("/download", async (c) => {
-  const publicPath = join(import.meta.dirname, "public", "daycode.exe");
-  const cliPath = join(import.meta.dirname, "..", "..", "cli", "daycode.exe");
+  const publicPath = join(rootDir, "src", "public", "daycode.exe");
+  const cliPath = join(rootDir, "..", "cli", "daycode.exe");
 
   const filePath = existsSync(publicPath) ? publicPath : cliPath;
 
@@ -28,6 +30,6 @@ app.get("/download", async (c) => {
   });
 });
 
-app.use("/*", serveStatic({ root: "./src/public" }));
+app.use("/*", serveStatic({ root: join(rootDir, "src", "public") }));
 
 export default { port: 8080, fetch: app.fetch };
